@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+    <div id="root">
+        <h1>ToDo List</h1>
+        <div>
+            <!-- <form @submit.prevent="addTodo"> -->
+            タイトル:<input type="text" v-model="newTitle" maxlength="20">
+            内容:<input type="text" v-model="newContent">
+            <button @click="addTodo">登録</button>
+            <!-- </form> -->
+
+            <input type="text">
+            <button>検索</button>
+        </div>
+        <div>
+            <p>★ トータル: {{toDoList.length}} 件★</p>
+        </div>
+
+        <div class="table">
+            <div class="line">
+                <p>番号</p>
+                <p>タイトル</p>
+                <p>内容</p>
+                <p>作成日時</p>
+                <p>オプション</p>
+            </div>
+            <div v-for="(item,index) in toDoList" :key="item.id" class="line">
+                <p>{{item.ID}}</p>
+                <p>{{item.title}}</p>
+                <p>{{item.content}}</p>
+                <p>{{item.created_at | dateFormate}}</p>
+                <p>
+                    <span @click="editTodo(item,index)">変更</span>
+                    |
+                    <span @click="deleteTodo(item,index)">削除</span>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- 編集画面 -->
+
+        <div id="alert" v-show="alertShow">
+            <input type="text" v-model="inputTitle" maxlength="20">
+            <input type="text" v-model="inputContent">
+
+            <div>
+                <button @click="sureClick">確認</button>
+                <button @click="cancelClick">キャンセル</button>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script src="vue.js"></script>
+
+</body>
+
+</html>
