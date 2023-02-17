@@ -9,8 +9,10 @@ new Vue({
         inputContent: "",
         currentClickIndex: "",
 
-        newTitle: '',
-        newContent: '',
+        newTitle: "",
+        newContent: "",
+
+        inputSearch: ""
     },
 
     mounted() {
@@ -23,6 +25,7 @@ new Vue({
             axios.get('./getData.php')
                 .then((res) => {
                     this.toDoList = res.data;
+                    // console.log(this.toDoList);
                 })
                 .catch(err => {
                     console.log(err);
@@ -100,6 +103,13 @@ new Vue({
                 })
         },
 
+        // タイトルでTodoを検索する
+        searchToDo() {
+            this.toDoList = this.toDoList.filter((item) => {
+                return item.title.includes(this.inputSearch)
+            })
+        }
+
     },
 
     filters: {
@@ -109,19 +119,10 @@ new Vue({
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
-            return year + '年' + month + '月' + day + '日';
+            return year + "年" + month + "月" + day + "日";
         }
     }
 
-
-
-
-    // 日時データの処理
-    // this.newCreatedAt = moment(new Date()).format('YYYY-MM-DD hh:mm:ss')
-    // this.newCreatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    // this.newCreatedAt = new Date().toLocaleString()
-    // this.newCreatedAt = new Date().getTime();
-    // console.log(typeof this.newCreatedAt);
 
 
 })

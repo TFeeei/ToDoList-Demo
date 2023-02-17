@@ -17,7 +17,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 $title = $data['title'];
 $content = $data['content'];
 
-// 获取现在时间
+// 現在の時間を獲得する
 $createdAt = time();
 $createdAt = date('Y-m-d H:i:s', $createdAt);
 

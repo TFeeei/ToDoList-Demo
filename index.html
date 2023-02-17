@@ -24,9 +24,10 @@
             内容:<input type="text" v-model="newContent">
             <button @click="addTodo">登録</button>
             <!-- </form> -->
-
-            <input type="text">
-            <button>検索</button>
+        </div>
+        <div>
+            <input type="text" v-model="inputSearch" maxlength="20">
+            <button @click="searchToDo">検索</button>
         </div>
         <div>
             <p>★ トータル: {{toDoList.length}} 件★</p>
