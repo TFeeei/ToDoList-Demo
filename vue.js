@@ -4,7 +4,9 @@ new Vue({
         toDoList: [],
 
         totalNum: "",
-        alertShow: false,
+        addAlertShow: false,
+        editAlertShow: false,
+
         inputTitle: "",
         inputContent: "",
         currentClickIndex: "",
@@ -34,6 +36,10 @@ new Vue({
 
         // Todoの新規作成
         addTodo() {
+            this.addAlertShow = true
+        },
+
+        addSureClick() {
             if (this.newTitle && this.newContent) {
                 let addData = {
                     title: this.newTitle,
@@ -45,6 +51,7 @@ new Vue({
                     }).catch(err => {
                         console.log(err);
                     }).then(() => {
+                        this.addAlertShow = false
                         this.getToDoList()
                     })
             } else {
@@ -54,7 +61,7 @@ new Vue({
 
         // Todoの編集
         editTodo(item, index) {
-            this.alertShow = true
+            this.editAlertShow = true
             this.inputTitle = item.title
             this.inputContent = item.content
             this.currentClickIndex = parseInt(this.toDoList[index].ID)
@@ -73,7 +80,7 @@ new Vue({
                     }).catch(err => {
                         console.log(err);
                     }).then(() => {
-                        this.alertShow = false
+                        this.editAlertShow = false
                         this.getToDoList()
                     })
             } else {
@@ -83,7 +90,8 @@ new Vue({
         },
         // 編集をキャンセルする
         cancelClick() {
-            this.alertShow = false
+            this.addAlertShow = false
+            this.editAlertShow = false
         },
 
         // Todoの削除

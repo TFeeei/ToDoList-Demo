@@ -11,53 +11,69 @@
     <!-- axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+    <!-- icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
     <link rel="stylesheet" href="index.css">
 
 </head>
 
 <body>
     <div id="root">
-        <h1>ToDo List</h1>
-        <div>
-            <!-- <form @submit.prevent="addTodo"> -->
-            タイトル:<input type="text" v-model="newTitle" maxlength="20">
-            内容:<input type="text" v-model="newContent">
-            <button @click="addTodo">登録</button>
-            <!-- </form> -->
-        </div>
-        <div>
-            <input type="text" v-model="inputSearch" maxlength="20">
-            <button @click="searchToDo">検索</button>
-        </div>
-        <div>
-            <p>★ トータル: {{toDoList.length}} 件★</p>
+        <div class="leftSide">
+            <h1>ToDo List</h1>
+            <p>ー　開発課題用　ー</p>
+
+            <div class="inputSearch">
+                <input type="text" v-model="inputSearch" maxlength="20" placeholder="Search...">
+                <i class="ri-search-line" @click="searchToDo"></i>
+            </div>
+            <!-- <div>
+                <p>★ トータル: {{toDoList.length}} 件★</p>
+            </div> -->
         </div>
 
-        <div class="table">
-            <div class="line">
-                <p>番号</p>
-                <p>タイトル</p>
-                <p>内容</p>
-                <p>作成日時</p>
-                <p>オプション</p>
+        <div class="rightSide">
+
+            <div class="addTodo">
+                <i class="ri-add-fill" @click="addTodo"></i>
             </div>
-            <div v-for="(item,index) in toDoList" :key="item.id" class="line">
-                <p>{{item.ID}}</p>
-                <p>{{item.title}}</p>
-                <p>{{item.content}}</p>
-                <p>{{item.created_at | dateFormate}}</p>
-                <p>
-                    <span @click="editTodo(item,index)">変更</span>
-                    |
-                    <span @click="deleteTodo(item,index)">削除</span>
-                </p>
+
+            <div class="todoTable">
+                <div v-for="(item,index) in toDoList" :key="item.id" class="todoLine">
+                    <div>
+                        <p>{{item.title}}</p>
+                        <p>{{item.content}}</p>
+                    </div>
+                    <p>{{item.created_at | dateFormate}}</p>
+                    <p>
+                        <i class="ri-edit-2-line" @click="editTodo(item,index)"></i>
+                        <i class="ri-delete-bin-line" @click="deleteTodo(item,index)"></i>
+                    </p>
+                </div>
             </div>
 
         </div>
 
-        <!-- 編集画面 -->
+        <!-- 新規Todo画面 -->
 
-        <div id="alert" v-show="alertShow">
+        <div id="addAlert" v-show="addAlertShow">
+            <div>
+                タイトル:<input type="text" v-model="newTitle" maxlength="20"> <br>
+                内容:<input type="text" v-model="newContent">
+            </div>
+
+            <div>
+                <button @click="addSureClick">確認</button>
+                <button @click="cancelClick">キャンセル</button>
+            </div>
+        </div>
+
+
+
+        <!-- 編集Todo画面 -->
+
+        <div id="editAlert" v-show="editAlertShow">
             <input type="text" v-model="inputTitle" maxlength="20">
             <input type="text" v-model="inputContent">
 
