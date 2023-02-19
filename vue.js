@@ -122,6 +122,8 @@ new Vue({
         // タイトルでTodoを検索する
         searchToDo() {
             if (this.inputSearch) {
+                // 検索したらcurrentPageも更新すること
+                this.currentPage = 1
                 this.todoList = this.todoList.filter((item) => {
                     return item.title.includes(this.inputSearch)
                 })
