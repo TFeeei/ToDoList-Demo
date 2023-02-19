@@ -127,7 +127,7 @@
     box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
     border-radius: 10px;
 
-    margin-bottom: 20px;
+    margin-top: 20px;
     padding: 0 70px 0 70px;
     box-sizing: border-box;
 
@@ -143,7 +143,6 @@
 .todoLine div:nth-child(1) :nth-child(1) {
     font-size: 32px;
     font-weight: bolder;
-    /* font-family: ''; */
 }
 
 .todoTable p {
@@ -158,16 +157,17 @@
     margin-left: 20px;
 }
 
-/* .todoLine :nth-child(1),
-.todoLine :nth-child(4) {
-    width: 150px !important;
-} */
-
-/* .todoTable span {
-    color: #337AB7;
+.rightSide button {
+    margin: 40px 10px 0px 10px;
+    display: inline-block;
+    background-color: #96C3BA;
+    color: #fff;
+    font-size: 24px;
+    border: none;
     cursor: pointer;
-} */
+}
 
+/* 新規Todo画面 と　編集Todo画面 */
 #editAlert,
 #addAlert {
     width: 600px;
@@ -192,13 +192,6 @@
 
 #editAlert input,
 #addAlert input {
-    /* width: 250px;
-    height: 25px;
-    border-radius: 10px;
-    outline: none;
-    font-size: 20px; */
-
-
     width: 300px;
     height: 70px;
     box-sizing: border-box;

@@ -1,7 +1,7 @@
 new Vue({
     el: "#root",
     data: {
-        toDoList: [],
+        todoList: [],
 
         totalNum: "",
         addAlertShow: false,
@@ -14,20 +14,49 @@ new Vue({
         newTitle: "",
         newContent: "",
 
-        inputSearch: ""
+        inputSearch: "",
+
+        currentPage: 1,
+        todoPerPage: 5,
+
+        apiUrl: './DatabaseHandler.php'
     },
 
     mounted() {
         this.getToDoList();
     },
 
+    computed: {
+        paginatedTodo() {
+            const start = (this.currentPage - 1) * this.todoPerPage;
+            const end = start + this.todoPerPage;
+            return this.todoList.slice(start, end)
+        },
+
+        // 合計ページ数
+        totalPages() {
+            return Math.ceil(this.todoList.length / this.todoPerPage);
+        }
+    },
+
     methods: {
+        // データを渡す
+        postData(url, data) {
+            axios.post(url, data)
+                .then(res => {
+                    console.log(res.data);
+                }).catch(err => {
+                    console.log(err);
+                }).then(() => {
+                    this.getToDoList()
+                })
+        },
         // データを獲得する
         getToDoList() {
-            axios.get('./getData.php')
+            axios.get(this.apiUrl + '?action=getData')
                 .then((res) => {
-                    this.toDoList = res.data;
-                    // console.log(this.toDoList);
+                    this.todoList = res.data;
+                    // console.log(this.todoList);
                 })
                 .catch(err => {
                     console.log(err);
@@ -45,15 +74,8 @@ new Vue({
                     title: this.newTitle,
                     content: this.newContent,
                 }
-                axios.post('./insertData.php', addData)
-                    .then(res => {
-                        console.log(res.data);
-                    }).catch(err => {
-                        console.log(err);
-                    }).then(() => {
-                        this.addAlertShow = false
-                        this.getToDoList()
-                    })
+                this.postData(this.apiUrl + '?action=insertData', addData)
+                this.addAlertShow = false
             } else {
                 alert("タイトルと内容を両方入力してください")
             }
@@ -64,7 +86,7 @@ new Vue({
             this.editAlertShow = true
             this.inputTitle = item.title
             this.inputContent = item.content
-            this.currentClickIndex = parseInt(this.toDoList[index].ID)
+            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID)
         },
         // 編集を確認する
         sureClick() {
@@ -74,15 +96,8 @@ new Vue({
                     content: this.inputContent,
                     id: this.currentClickIndex
                 }
-                axios.post('./updateData.php', updateData)
-                    .then(res => {
-                        console.log(res.data);
-                    }).catch(err => {
-                        console.log(err);
-                    }).then(() => {
-                        this.editAlertShow = false
-                        this.getToDoList()
-                    })
+                this.postData(this.apiUrl + '?action=updateData', updateData)
+                this.editAlertShow = false
             } else {
                 alert("タイトルと内容を両方入力してください")
             }
@@ -96,26 +111,28 @@ new Vue({
 
         // Todoの削除
         deleteTodo(item, index) {
-            // 把现在点击的todo项目的id传值
-            this.currentClickIndex = parseInt(this.toDoList[index].ID)
+            // 現在操作しているtodo項目のIDを渡す
+            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID)
 
-            axios.post('./deleteData.php', {
-                    id: this.currentClickIndex
-                })
-                .then(res => {
-                    console.log(res.data);
-                }).catch(err => {
-                    console.log(err);
-                }).then(() => {
-                    this.getToDoList()
-                })
+            this.postData(this.apiUrl + '?action=deleteData', {
+                id: this.currentClickIndex
+            })
         },
 
         // タイトルでTodoを検索する
         searchToDo() {
-            this.toDoList = this.toDoList.filter((item) => {
-                return item.title.includes(this.inputSearch)
-            })
+            if (this.inputSearch) {
+                this.todoList = this.todoList.filter((item) => {
+                    return item.title.includes(this.inputSearch)
+                })
+            } else {
+                this.getToDoList()
+            }
+
+        },
+
+        setPage(pageNum) {
+            this.currentPage = pageNum;
         }
 
     },

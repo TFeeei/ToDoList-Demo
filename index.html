@@ -29,7 +29,7 @@
                 <i class="ri-search-line" @click="searchToDo"></i>
             </div>
             <!-- <div>
-                <p>★ トータル: {{toDoList.length}} 件★</p>
+                <p>★ トータル: {{todoList.length}} 件★</p>
             </div> -->
         </div>
 
@@ -40,7 +40,7 @@
             </div>
 
             <div class="todoTable">
-                <div v-for="(item,index) in toDoList" :key="item.id" class="todoLine">
+                <div v-for="(item,index) in paginatedTodo" :key="item.id" class="todoLine">
                     <div>
                         <p>{{item.title}}</p>
                         <p>{{item.content}}</p>
@@ -51,6 +51,12 @@
                         <i class="ri-delete-bin-line" @click="deleteTodo(item,index)"></i>
                     </p>
                 </div>
+            </div>
+
+            <div>
+                <button v-if="currentPage > 1" @click="setPage(currentPage - 1)">前へ</button>
+                <button v-for="pageNum in totalPages" :key="pageNum" @click="setPage(pageNum)">{{pageNum}}</button>
+                <button v-if="currentPage < totalPages" @click="setPage(currentPage + 1)">次へ</button>
             </div>
 
         </div>
