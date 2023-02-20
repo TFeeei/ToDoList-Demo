@@ -19,7 +19,9 @@ new Vue({
         currentPage: 1,
         todoPerPage: 5,
 
-        apiUrl: './DatabaseHandler.php'
+        apiUrl: './DatabaseHandler.php',
+
+        deletedLine: "",
     },
 
     mounted() {
@@ -27,13 +29,14 @@ new Vue({
     },
 
     computed: {
+        // todoListデータを1ページに表示する件数によって分割する
         paginatedTodo() {
             const start = (this.currentPage - 1) * this.todoPerPage;
             const end = start + this.todoPerPage;
             return this.todoList.slice(start, end)
         },
 
-        // 合計ページ数
+        // 合計ページ数を計算する
         totalPages() {
             return Math.ceil(this.todoList.length / this.todoPerPage);
         }
@@ -51,12 +54,11 @@ new Vue({
                     this.getToDoList()
                 })
         },
-        // データを獲得する
+        // データを受け取る
         getToDoList() {
             axios.get(this.apiUrl + '?action=getData')
                 .then((res) => {
                     this.todoList = res.data;
-                    // console.log(this.todoList);
                 })
                 .catch(err => {
                     console.log(err);
@@ -67,7 +69,6 @@ new Vue({
         addTodo() {
             this.addAlertShow = true
         },
-
         addSureClick() {
             if (this.newTitle && this.newContent) {
                 let addData = {
@@ -79,6 +80,8 @@ new Vue({
             } else {
                 alert("タイトルと内容を両方入力してください")
             }
+            const nowTotalPages = Math.ceil((this.todoList.length + 1) / this.todoPerPage) // 最後のページに移動する
+            this.currentPage = nowTotalPages
         },
 
         // Todoの編集
@@ -111,31 +114,35 @@ new Vue({
 
         // Todoの削除
         deleteTodo(item, index) {
-            // 現在操作しているtodo項目のIDを渡す
-            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID)
+            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID) // 現在操作しているtodo項目のIDを渡す
+            this.deletedLine = index
 
-            this.postData(this.apiUrl + '?action=deleteData', {
-                id: this.currentClickIndex
-            })
+            setTimeout(() => {
+                this.postData(this.apiUrl + '?action=deleteData', {
+                    id: this.currentClickIndex
+                })
+                this.deletedLine = "";
+            }, 800);
         },
 
         // タイトルでTodoを検索する
         searchToDo() {
             if (this.inputSearch) {
-                // 検索したらcurrentPageも更新すること
-                this.currentPage = 1
+                this.currentPage = 1 // 検索したらcurrentPageも更新すること
                 this.todoList = this.todoList.filter((item) => {
                     return item.title.includes(this.inputSearch)
                 })
+                // this.todoList.length > 0 ? null : alert("結果なし")
             } else {
                 this.getToDoList()
             }
-
+            // todoList得返回。。。
         },
 
+        // 選択されたページに移動する
         setPage(pageNum) {
             this.currentPage = pageNum;
-        }
+        },
 
     },
 

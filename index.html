@@ -10,12 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
     <!-- icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-
     <link rel="stylesheet" href="index.css">
-
 </head>
 
 <body>
@@ -40,7 +37,8 @@
             </div>
 
             <div class="todoTable">
-                <div v-for="(item,index) in paginatedTodo" :key="item.id" class="todoLine">
+                <div v-for="(item,index) in paginatedTodo" :key="item.id" class="todoLine"
+                    :class="{'deletedLine':index === deletedLine}">
                     <div>
                         <p>{{item.title}}</p>
                         <p>{{item.content}}</p>
@@ -55,14 +53,14 @@
 
             <div>
                 <button v-if="currentPage > 1" @click="setPage(currentPage - 1)">前へ</button>
-                <button v-for="pageNum in totalPages" :key="pageNum" @click="setPage(pageNum)">{{pageNum}}</button>
+                <button v-for="pageNum in totalPages" :key="pageNum" @click="setPage(pageNum)"
+                    :class="{'selectedPage': pageNum === currentPage}">{{pageNum}}</button>
                 <button v-if="currentPage < totalPages" @click="setPage(currentPage + 1)">次へ</button>
             </div>
 
         </div>
 
         <!-- 新規Todo画面 -->
-
         <div id="addAlert" v-show="addAlertShow">
             <div>
                 タイトル:<input type="text" v-model="newTitle" maxlength="20"> <br>
@@ -75,10 +73,7 @@
             </div>
         </div>
 
-
-
         <!-- 編集Todo画面 -->
-
         <div id="editAlert" v-show="editAlertShow">
             <input type="text" v-model="inputTitle" maxlength="20">
             <input type="text" v-model="inputContent">
@@ -88,8 +83,6 @@
                 <button @click="cancelClick">キャンセル</button>
             </div>
         </div>
-
-
 
     </div>
 

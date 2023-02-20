@@ -1,6 +1,5 @@
 * {
     margin: 0;
-
     font-family: 'Oriya MN', 'Shree Devanagari 714';
 }
 
@@ -101,6 +100,7 @@
 .addTodo i {
     width: 140px;
     height: 70px;
+    border-radius: 10px;
     cursor: pointer;
     color: #407076;
     font-size: 36px;
@@ -108,6 +108,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    transition: 0.3s ease-in-out;
+}
+
+.addTodo i:hover {
+    background-color: #407076;
+    color: #fff;
 }
 
 .todoTable {
@@ -134,6 +141,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    opacity: 1;
+
+}
+
+.deletedLine {
+    transition: 0.7s ease-in-out;
+    opacity: 0;
 }
 
 .todoLine div:nth-child(1) {
@@ -167,9 +181,28 @@
     cursor: pointer;
 }
 
+.rightSide button.selectedPage {
+    font-size: 30px;
+    color: #407076;
+    position: relative;
+}
+
+.rightSide button.selectedPage::after {
+    content: " ";
+    position: absolute;
+    display: block;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25%;
+    height: 2px;
+    background-color: #407076;
+}
+
 /* 新規Todo画面 と　編集Todo画面 */
 #editAlert,
 #addAlert {
+    transition: 0.2s ease-in-out;
     width: 600px;
     height: 400px;
 

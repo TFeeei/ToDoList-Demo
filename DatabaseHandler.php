@@ -15,7 +15,7 @@ class DatabaseHandler
         }
     }
 
-    public function getData()
+    function getData()
     {
         $sql = "select * from posts";
         $result = mysqli_query($this->conn, $sql);
@@ -32,42 +32,39 @@ class DatabaseHandler
 
     function insertData($title, $content)
     {
-        // 現在の時間を獲得する
-        $createdAt = time();
-        $createdAt = date('Y-m-d H:i:s', $createdAt);
-
+        $createdAt = $this->getCurrentTime();
         $sql = "insert into posts values(default, '$title','$content', '$createdAt','$createdAt')";
-
-        if ($this->conn->query($sql) === TRUE) {
-            echo "Data inserted successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . $this->conn->error;
-        }
+        $this->executeSql($this->conn, $sql, "Data inserted successfully");
     }
 
     function updateData($todoId, $title, $content)
     {
-        // 現在の時間を獲得する
-        $updatedAt = time();
-        $updatedAt = date('Y-m-d H:i:s', $updatedAt);
+        $updatedAt = $this->getCurrentTime();
         $sql = "update posts set title = '$title', content = '$content', updated_at ='$updatedAt' where ID = '$todoId'";
-
-        if ($this->conn->query($sql) === TRUE) {
-            echo "Data updated successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . $this->conn->error;
-        }
+        $this->executeSql($this->conn, $sql, "Data updated successfully");
     }
-
 
     function deleteData($todoId)
     {
         $sql = "delete from posts where ID = '$todoId'";
+        $this->executeSql($this->conn, $sql, "Data deleted successfully");
+    }
 
-        if ($this->conn->query($sql) === TRUE) {
-            echo "Data deleted successfully";
+    // 現在の時間を獲得する
+    function getCurrentTime()
+    {
+        $currentTime = time();
+        $currentTime = date('Y-m-d H:i:s', $currentTime);
+        return $currentTime;
+    }
+
+    // SQlを実行する
+    function executeSql($conn, $sql, $successMsg)
+    {
+        if ($conn->query($sql) === TRUE) {
+            echo $successMsg;
         } else {
-            echo "Error: " . $sql . "<br>" . $this->conn->error;
+            echo "Error: " . $sql . "<br>" . $conn->error;
         }
     }
 
@@ -80,14 +77,6 @@ class DatabaseHandler
 
 $db = new DatabaseHandler();
 $data = json_decode(file_get_contents("php://input"), true);
-
-
-
-// if (isset($_GET['action'])) {
-//     $action = $_GET['action'];
-// } elseif (isset($_POST['action'])) {
-//     $action = $_POST['action'];
-// }
 $action = $_GET['action'] ?? $_POST['action'] ?? null;
 
 
