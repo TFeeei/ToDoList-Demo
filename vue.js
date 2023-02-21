@@ -18,6 +18,7 @@ new Vue({
 
         currentPage: 1,
         todoPerPage: 5,
+        finalPage: "",
 
         apiUrl: './DatabaseHandler.php',
 
@@ -39,7 +40,7 @@ new Vue({
         // 合計ページ数を計算する
         totalPages() {
             return Math.ceil(this.todoList.length / this.todoPerPage);
-        }
+        },
     },
 
     methods: {
@@ -80,8 +81,8 @@ new Vue({
             } else {
                 alert("タイトルと内容を両方入力してください")
             }
-            const nowTotalPages = Math.ceil((this.todoList.length + 1) / this.todoPerPage) // 最後のページに移動する
-            this.currentPage = nowTotalPages
+            const newTotalPages = Math.ceil((this.todoList.length + 1) / this.todoPerPage) // 最後のページに移動する
+            this.currentPage = newTotalPages
         },
 
         // Todoの編集
@@ -123,6 +124,8 @@ new Vue({
                 })
                 this.deletedLine = "";
             }, 800);
+
+            // 删掉最后一页第一行后，自动变前一页。
         },
 
         // タイトルでTodoを検索する

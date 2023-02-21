@@ -1,6 +1,6 @@
 * {
     margin: 0;
-    font-family: 'Oriya MN', 'Shree Devanagari 714';
+    font-family: 'Oriya MN', 'ヒラギノ角ゴシック';
 }
 
 #root {
@@ -155,13 +155,14 @@
 }
 
 .todoLine div:nth-child(1) :nth-child(1) {
-    font-size: 32px;
-    font-weight: bolder;
+    font-size: 30px;
+    font-weight: 450;
 }
 
 .todoTable p {
-    font-size: 20px;
+    font-size: 18px;
     color: #407076;
+    font-weight: 300;
 }
 
 .todoTable i {
@@ -202,15 +203,13 @@
 /* 新規Todo画面 と　編集Todo画面 */
 #editAlert,
 #addAlert {
-    transition: 0.2s ease-in-out;
-    width: 600px;
+    width: 500px;
     height: 400px;
 
     border-radius: 10px;
-    border: 2px solid #407076;
     background-color: #fff;
     text-align: center;
-    box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+    box-shadow: 0px 15px 15px rgba(0, 37, 38, 0.3);
 
     position: fixed;
     top: 50%;
@@ -223,9 +222,24 @@
     align-items: center;
 }
 
+#editAlert .inputContainer {
+    position: relative;
+}
+
+#editAlert label {
+    width: 20%;
+    position: absolute;
+    font-weight: bolder;
+    color: #407076;
+    left: 5px;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 16px;
+}
+
 #editAlert input,
 #addAlert input {
-    width: 300px;
+    width: 400px;
     height: 70px;
     box-sizing: border-box;
     padding: 0px 60px 0px 30px;
@@ -233,19 +247,20 @@
     border: none;
     outline: none;
     font-size: 20px;
+    background-color: #ecefef;
     color: #407076;
-    box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+    font-weight: 300;
 }
 
 #editAlert button,
 #addAlert button {
-    width: 100px;
-    height: 40px;
+    width: 150px;
+    height: 50px;
     background-color: #407076;
     color: white;
     border: none;
     border-radius: 10px;
     font-size: 16px;
     cursor: pointer;
-    margin: 0 20px;
+    margin: 0 30px;
 }

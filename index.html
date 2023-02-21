@@ -62,10 +62,8 @@
 
         <!-- 新規Todo画面 -->
         <div id="addAlert" v-show="addAlertShow">
-            <div>
-                タイトル:<input type="text" v-model="newTitle" maxlength="20"> <br>
-                内容:<input type="text" v-model="newContent">
-            </div>
+            <input type="text" v-model="newTitle" maxlength="20" placeholder="タイトル">
+            <input type="text" v-model="newContent" placeholder="内容">
 
             <div>
                 <button @click="addSureClick">確認</button>
@@ -75,9 +73,14 @@
 
         <!-- 編集Todo画面 -->
         <div id="editAlert" v-show="editAlertShow">
-            <input type="text" v-model="inputTitle" maxlength="20">
-            <input type="text" v-model="inputContent">
-
+            <div class="inputContainer">
+                <label>タイトル</label>
+                <input type="text" v-model="inputTitle" maxlength="20" id="inputTitle">
+            </div>
+            <div class="inputContainer">
+                <label>内容</label>
+                <input type="text" v-model="inputContent">
+            </div>
             <div>
                 <button @click="sureClick">確認</button>
                 <button @click="cancelClick">キャンセル</button>
