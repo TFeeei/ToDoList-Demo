@@ -21,24 +21,23 @@
             <h1>ToDo List</h1>
             <p>ー　開発課題用　ー</p>
 
+            <!-- 検索欄 -->
             <div class="inputSearch">
                 <input type="text" v-model="inputSearch" maxlength="20" placeholder="Search...">
                 <i class="ri-search-line" @click="searchToDo"></i>
             </div>
-            <!-- <div>
-                <p>★ トータル: {{todoList.length}} 件★</p>
-            </div> -->
         </div>
 
         <div class="rightSide">
-
+            <!-- 追加ボタン -->
             <div class="addTodo">
                 <i class="ri-add-fill" @click="addTodo"></i>
             </div>
 
+            <!-- Todo一覧 -->
             <div class="todoTable">
                 <div v-for="(item,index) in paginatedTodo" :key="item.id" class="todoLine"
-                    :class="{'deletedLine':index === deletedLine}">
+                    :class="{'deletedTodoLine':index === deletedTodoLine}">
                     <div>
                         <p>{{item.title}}</p>
                         <p>{{item.content}}</p>
@@ -51,19 +50,19 @@
                 </div>
             </div>
 
+            <!-- ページャー -->
             <div>
                 <button v-if="currentPage > 1" @click="setPage(currentPage - 1)">前へ</button>
                 <button v-for="pageNum in totalPages" :key="pageNum" @click="setPage(pageNum)"
                     :class="{'selectedPage': pageNum === currentPage}">{{pageNum}}</button>
                 <button v-if="currentPage < totalPages" @click="setPage(currentPage + 1)">次へ</button>
             </div>
-
         </div>
 
         <!-- 新規Todo画面 -->
-        <div id="addAlert" v-show="addAlertShow">
-            <input type="text" v-model="newTitle" maxlength="20" placeholder="タイトル">
-            <input type="text" v-model="newContent" placeholder="内容">
+        <div id="addModel" v-show="isAddModelShow">
+            <input type="text" v-model="inputNewTitle" maxlength="20" placeholder="タイトル">
+            <input type="text" v-model="inputNewContent" placeholder="内容">
 
             <div>
                 <button @click="addSureClick">確認</button>
@@ -72,17 +71,18 @@
         </div>
 
         <!-- 編集Todo画面 -->
-        <div id="editAlert" v-show="editAlertShow">
+        <div id="editModel" v-show="isEditModelShow">
             <div class="inputContainer">
                 <label>タイトル</label>
-                <input type="text" v-model="inputTitle" maxlength="20" id="inputTitle">
+                <input type="text" v-model="inputEditTitle" maxlength="20" id="inputEditTitle">
             </div>
             <div class="inputContainer">
                 <label>内容</label>
-                <input type="text" v-model="inputContent">
+                <input type="text" v-model="inputEditContent">
             </div>
+
             <div>
-                <button @click="sureClick">確認</button>
+                <button @click="editSureClick">確認</button>
                 <button @click="cancelClick">キャンセル</button>
             </div>
         </div>

@@ -145,15 +145,17 @@
 
 }
 
-.deletedLine {
+.deletedTodoLine {
     transition: 0.7s ease-in-out;
     opacity: 0;
 }
 
+/* タイトルと内容 */
 .todoLine div:nth-child(1) {
     width: 60%;
 }
 
+/* タイトル */
 .todoLine div:nth-child(1) :nth-child(1) {
     font-size: 30px;
     font-weight: 450;
@@ -201,8 +203,8 @@
 }
 
 /* 新規Todo画面 と　編集Todo画面 */
-#editAlert,
-#addAlert {
+#editModel,
+#addModel {
     width: 500px;
     height: 400px;
 
@@ -222,11 +224,11 @@
     align-items: center;
 }
 
-#editAlert .inputContainer {
+#editModel .inputContainer {
     position: relative;
 }
 
-#editAlert label {
+#editModel label {
     width: 20%;
     position: absolute;
     font-weight: bolder;
@@ -237,8 +239,8 @@
     font-size: 16px;
 }
 
-#editAlert input,
-#addAlert input {
+#editModel input,
+#addModel input {
     width: 400px;
     height: 70px;
     box-sizing: border-box;
@@ -252,8 +254,8 @@
     font-weight: 300;
 }
 
-#editAlert button,
-#addAlert button {
+#editModel button,
+#addModel button {
     width: 150px;
     height: 50px;
     background-color: #407076;

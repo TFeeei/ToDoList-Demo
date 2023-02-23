@@ -17,55 +17,58 @@ class DatabaseHandler
 
     function getData()
     {
-        $sql = "select * from posts";
-        $result = mysqli_query($this->conn, $sql);
+        $sql = "SELECT * FROM posts";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }
             echo json_encode($rows);
         } else {
-            echo "結果なし";
+            echo "No results";
         }
     }
 
     function insertData($title, $content)
     {
-        $createdAt = $this->getCurrentTime();
-        $sql = "insert into posts values(default, '$title','$content', '$createdAt','$createdAt')";
-        $this->executeSql($this->conn, $sql, "Data inserted successfully");
+        $createdAt = $this->getCurrentTime(); // データを挿入する時間を取得
+
+        $sql = "INSERT INTO posts VALUES(DEFAULT, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ssss", $title, $content, $createdAt, $createdAt);
+        $stmt->execute();
+        echo "Data inserted successfully";
     }
 
     function updateData($todoId, $title, $content)
     {
-        $updatedAt = $this->getCurrentTime();
-        $sql = "update posts set title = '$title', content = '$content', updated_at ='$updatedAt' where ID = '$todoId'";
-        $this->executeSql($this->conn, $sql, "Data updated successfully");
+        $updatedAt = $this->getCurrentTime(); // データを更新する時間を取得
+
+        $sql = "UPDATE posts SET title = ?, content = ?, updated_at = ? WHERE ID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sssi", $title, $content, $updatedAt, $todoId);
+        $stmt->execute();
+        echo "Data updated successfully";
     }
 
     function deleteData($todoId)
     {
-        $sql = "delete from posts where ID = '$todoId'";
-        $this->executeSql($this->conn, $sql, "Data deleted successfully");
+        $sql = "DELETE FROM posts WHERE ID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $todoId);
+        $stmt->execute();
+        echo "Data deleted successfully";
     }
 
-    // 現在の時間を獲得する
+    // 現在の時間を取得する
     function getCurrentTime()
     {
         $currentTime = time();
         $currentTime = date('Y-m-d H:i:s', $currentTime);
         return $currentTime;
-    }
-
-    // SQlを実行する
-    function executeSql($conn, $sql, $successMsg)
-    {
-        if ($conn->query($sql) === TRUE) {
-            echo $successMsg;
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
     }
 
     function __destruct()
@@ -79,18 +82,22 @@ $db = new DatabaseHandler();
 $data = json_decode(file_get_contents("php://input"), true);
 $action = $_GET['action'] ?? $_POST['action'] ?? null;
 
-
 switch ($action) {
     case 'getData':
         $db->getData();
         break;
     case 'insertData':
-        $db->insertData($data['title'], $data['content']);
+        $db->insertData(filterXSS($data['title']), filterXSS($data['content']));
         break;
     case 'updateData':
-        $db->updateData($data['id'], $data['title'], $data['content']);
+        $db->updateData($data['id'], filterXSS($data['title']), filterXSS($data['content']));
         break;
     case 'deleteData':
         $db->deleteData($data['id']);
         break;
+}
+
+function filterXSS($data)
+{
+    return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 }
