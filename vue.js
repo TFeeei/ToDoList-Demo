@@ -114,7 +114,7 @@ new Vue({
         // Todoの削除
         deleteTodo(item, index) {
             this.currentClickIndex = parseInt(this.paginatedTodo[index].ID) // 現在操作しているtodo項目のIDを特定する
-            this.deletedTodoLine = index
+            this.deletedTodoLine = index // classバインディング構文の条件
 
             setTimeout(() => {
                 this.sendDataToServer(this.apiUrl + '?action=deleteData', {
