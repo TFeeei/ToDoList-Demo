@@ -29,9 +29,19 @@
         </div>
 
         <div class="rightSide">
-            <!-- 追加ボタン -->
-            <div class="addTodo">
-                <i class="ri-add-fill" @click="addTodo"></i>
+            <div class="featureBar">
+                <!-- セレクトボックス -->
+                <label for="" class="sortBox">
+                    <select name="">
+                        <option value="作成日時の昇順">作成日時の昇順</option>
+                        <option value="更新日時の昇順">更新日時の昇順</option>
+                    </select>
+                </label>
+
+                <!-- 追加ボタン -->
+                <div class="addTodo">
+                    <i class="ri-add-fill" @click="addTodo"></i>
+                </div>
             </div>
 
             <!-- Todo一覧 -->

@@ -81,20 +81,75 @@
     position: relative;
 }
 
+.featureBar {
+    width: 1000px;
+    height: 15%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sortBox {
+    background-color: #fff;
+    box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+    border-radius: 10px;
+    border: none;
+    position: relative;
+}
+
+.sortBox::before,
+.sortBox::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+}
+
+.sortBox::before {
+    display: inline-block;
+    right: 0;
+    width: 2.8em;
+    height: 70.5px;
+    border-radius: 0 9px 9px 0;
+    background-color: #407076;
+}
+
+.sortBox::after {
+    position: absolute;
+    top: 50%;
+    right: 1.4em;
+    transform: translate(50%, -50%) rotate(45deg);
+    width: 6px;
+    height: 6px;
+    border-bottom: 3px solid #fff;
+    border-right: 3px solid #fff;
+}
+
+.sortBox select {
+    appearance: none;
+    min-width: 230px;
+    height: 70px;
+    padding: .4em 3.6em .4em .8em;
+    border: none;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #407076;
+    font-size: 1em;
+    cursor: pointer;
+
+
+}
+
+.sortBox select:focus {
+    outline: 2px solid #407076;
+}
+
 .addTodo {
     width: 140px;
     height: 70px;
     background-color: #fff;
     box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
     border-radius: 10px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: absolute;
-    left: 70%;
-    margin-top: 30px;
 }
 
 .addTodo i {
@@ -123,7 +178,7 @@
     justify-content: space-around;
     align-items: center;
 
-    margin-top: 10%;
+    /* margin-top: 10%; */
 }
 
 .todoLine {

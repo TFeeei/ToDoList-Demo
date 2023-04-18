@@ -1,21 +1,16 @@
 <?php
+require_once './DatabaseConnection.php';
+
 class DatabaseHandler
 {
-    private $host = 'localhost';
-    private $user = 'root';
-    private $password = '';
-    private $database = 'fei2023';
     private $conn;
 
-    function __construct()
+    public function __construct(DatabaseConnection $dbConn)
     {
-        $this->conn = new mysqli($this->host, $this->user, $this->password, $this->database);
-        if ($this->conn->connect_error) {
-            echo "Error: " . $this->conn->error;
-        }
+        $this->conn = $dbConn->getConnection();
     }
 
-    function getData()
+    public function getData()
     {
         $sql = "SELECT * FROM posts";
         $stmt = $this->conn->prepare($sql);
@@ -26,13 +21,13 @@ class DatabaseHandler
             while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }
-            echo json_encode($rows);  // 取得したデータをJSON形式で出力
+            echo json_encode($rows); // 取得したデータをJSON形式で出力
         } else {
             die("No results found.");
         }
     }
 
-    function insertData($title, $content)
+    public function insertData($title, $content)
     {
         $createdAt = $this->getCurrentTime(); // データの挿入時間を取得
 
@@ -43,7 +38,7 @@ class DatabaseHandler
         echo "Data inserted successfully.";
     }
 
-    function updateData($todoId, $title, $content)
+    public function updateData($todoId, $title, $content)
     {
         $updatedAt = $this->getCurrentTime(); // データの更新時間を取得
 
@@ -51,10 +46,10 @@ class DatabaseHandler
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("sssi", $title, $content, $updatedAt, $todoId);
         $stmt->execute();
-        echo "Data updated successfully.";
+        echo "Data updated successfully." . $updatedAt;
     }
 
-    function deleteData($todoId)
+    public function deleteData($todoId)
     {
         $sql = "DELETE FROM posts WHERE ID = ?";
         $stmt = $this->conn->prepare($sql);
@@ -64,19 +59,19 @@ class DatabaseHandler
     }
 
     // 現在の時間を取得する
-    function getCurrentTime()
+    private function getCurrentTime()
     {
+        date_default_timezone_set('Asia/Tokyo');
         $currentTime = time();
         $currentTime = date('Y-m-d H:i:s', $currentTime);
         return $currentTime;
     }
 
-    function __destruct()
+    public function __destruct()
     {
         mysqli_close($this->conn);
     }
 }
-
 
 $db = new DatabaseHandler();
 $data = json_decode(file_get_contents("php://input"), true); // POSTされたJSONデータから配列へ変換
