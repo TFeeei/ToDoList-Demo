@@ -18,7 +18,11 @@ new Vue({
         currentPage: 1,
         todoPerPage: 5,
 
+        isDeleteModelShow: false, //削除時の確認メッセージモーダルを表示するフラグ
         deletedTodoLine: "", // 削除されたTodo行を一時特定するために存在する変数
+        animateIndex: "",
+
+        selectedOption: "CreatedAtAsc",
     },
 
     mounted() {
@@ -53,7 +57,13 @@ new Vue({
         },
         // データを受け取る
         getTodoList() {
-            axios.get(this.apiUrl + '?action=getData')
+            let apiUrl = this.apiUrl;
+            if (this.selectedOption === "CreatedAtAsc") {
+                apiUrl += '?action=getData'
+            } else if (this.selectedOption === "UpDatedAtAsc") {
+                apiUrl += '?action=sortBy' + this.selectedOption;
+            }
+            axios.get(apiUrl)
                 .then((res) => {
                     this.todoList = res.data;
                 })
@@ -109,17 +119,24 @@ new Vue({
         cancelClick() {
             this.isAddModelShow = false
             this.isEditModelShow = false
+            this.isDeleteModelShow = false
         },
 
         // Todoの削除
         deleteTodo(item, index) {
+            this.isDeleteModelShow = true
             this.currentClickIndex = parseInt(this.paginatedTodo[index].ID) // 現在操作しているtodo項目のIDを特定する
-            this.deletedTodoLine = index
+            this.animateIndex = index
+        },
 
+        deleteSureClick() {
+            this.isDeleteModelShow = false
+            this.deletedTodoLine = this.animateIndex
             setTimeout(() => {
                 this.sendDataToServer(this.apiUrl + '?action=deleteData', {
                     id: this.currentClickIndex
                 })
+                this.paginatedTodo.splice(this.animateIndex, 1); // データの削除。フラッシュを防止。
                 this.deletedTodoLine = "";
             }, 800);
         },

@@ -32,9 +32,9 @@
             <div class="featureBar">
                 <!-- セレクトボックス -->
                 <label for="" class="sortBox">
-                    <select name="">
-                        <option value="作成日時の昇順">作成日時の昇順</option>
-                        <option value="更新日時の昇順">更新日時の昇順</option>
+                    <select name="" v-model="selectedOption" @change="getTodoList">
+                        <option value="CreatedAtAsc">作成日時の昇順</option>
+                        <option value="UpDatedAtAsc">更新日時の昇順</option>
                     </select>
                 </label>
 
@@ -93,6 +93,15 @@
 
             <div>
                 <button @click="editSureClick">確認</button>
+                <button @click="cancelClick">キャンセル</button>
+            </div>
+        </div>
+
+        <!-- 削除確認画面 -->
+        <div id="deleteModel" v-show="isDeleteModelShow">
+            本当にこのリストを削除しますか？
+            <div>
+                <button @click="deleteSureClick">確認</button>
                 <button @click="cancelClick">キャンセル</button>
             </div>
         </div>

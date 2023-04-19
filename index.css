@@ -136,8 +136,6 @@
     color: #407076;
     font-size: 1em;
     cursor: pointer;
-
-
 }
 
 .sortBox select:focus {
@@ -177,8 +175,6 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-
-    /* margin-top: 10%; */
 }
 
 .todoLine {
@@ -259,7 +255,8 @@
 
 /* 新規Todo画面 と　編集Todo画面 */
 #editModel,
-#addModel {
+#addModel,
+#deleteModel {
     width: 500px;
     height: 400px;
 
@@ -310,7 +307,8 @@
 }
 
 #editModel button,
-#addModel button {
+#addModel button,
+#deleteModel button {
     width: 150px;
     height: 50px;
     background-color: #407076;
@@ -320,4 +318,11 @@
     font-size: 16px;
     cursor: pointer;
     margin: 0 30px;
+}
+
+
+#deleteModel {
+    height: 200px;
+    color: #407076;
+    font-size: 20px;
 }
