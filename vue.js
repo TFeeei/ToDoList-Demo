@@ -1,7 +1,7 @@
 new Vue({
     el: "#root",
     data: {
-        apiUrl: './DatabaseHandler.php',
+        apiUrl: './usePostTableHandle.php',
         todoList: [],
 
         isAddModelShow: false, // Todoを追加するモーダルを表示するフラグ
