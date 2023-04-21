@@ -1,12 +1,32 @@
 <?php
 
-require_once './DatabaseConnection.php';
+// データベースの接続
+trait DatabaseConnection
+{
+    private $host = 'localhost';
+    private $user = 'root';
+    private $password = '';
+    private $database = 'fei2023';
+    private $tableName = 'posts';
+    private $rows = [];
+
+    private $dbConnection;
+
+    public function getConnection()
+    {
+        $this->dbConnection = new mysqli($this->host, $this->user, $this->password, $this->database);
+        if ($this->dbConnection->connect_error) {
+            echo "Error: " . $this->dbConnection->error;
+        }
+        return $this->dbConnection;
+    }
+
+}
 
 // クラッド操作
 class PostTableHandler
 {
     use DatabaseConnection;
-    private $tbName = 'posts';
 
     public function __construct()
     {
@@ -15,7 +35,7 @@ class PostTableHandler
 
     public function insertData($title, $content)
     {
-        $sql = "INSERT INTO {$this->tbName} VALUES(DEFAULT, ?, ?,DEFAULT,DEFAULT)";
+        $sql = "INSERT INTO {$this->tableName} VALUES(DEFAULT, ?, ?,DEFAULT,DEFAULT)";
         $stmt = $this->dbConnection->prepare($sql);
         $stmt->bind_param("ss", $title, $content); // パラメータをバインド
         $stmt->execute();
@@ -24,7 +44,7 @@ class PostTableHandler
 
     public function updateData($todoId, $title, $content)
     {
-        $sql = "UPDATE {$this->tbName} SET title = ?, content = ? WHERE ID = ?";
+        $sql = "UPDATE {$this->tableName} SET title = ?, content = ? WHERE ID = ?";
         $stmt = $this->dbConnection->prepare($sql);
         $stmt->bind_param("ssi", $title, $content, $todoId);
         $stmt->execute();
@@ -33,7 +53,7 @@ class PostTableHandler
 
     public function deleteData($todoId)
     {
-        $sql = "DELETE FROM {$this->tbName} WHERE ID = ?";
+        $sql = "DELETE FROM {$this->tableName} WHERE ID = ?";
         $stmt = $this->dbConnection->prepare($sql);
         $stmt->bind_param("i", $todoId);
         $stmt->execute();
@@ -47,30 +67,11 @@ class PostTableHandler
 
 }
 
-// 並び替えのインターフェイス
-interface SortStrategy
+trait GetData
 {
-    public function getData();
-}
-
-// 具体的なクラス　作成日時の出力 
-// (重複が多くて未改善)（そもそもこの設計あっているか？）
-class sortByCreatedAtAsc implements SortStrategy
-{
-    use DatabaseConnection;
-
-    private $tbName = 'posts';
-    private $rows = [];
-
-    public function __construct()
+    public function getData($sortBy)
     {
-        $this->getConnection();
-    }
-
-    public function getData()
-    {
-
-        $sql = "SELECT * FROM {$this->tbName} order by created_at asc";
+        $sql = "SELECT * FROM {$this->tableName} order by {$sortBy} asc";
         $stmt = $this->dbConnection->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -79,6 +80,31 @@ class sortByCreatedAtAsc implements SortStrategy
             $this->rows[] = $row;
         }
         echo json_encode($this->rows); // 取得したデータをJSON形式で出力
+    }
+}
+
+// 並び替えのインターフェイス
+interface SortStrategy
+{
+    public function getSortedData();
+}
+
+// 具体的なクラス　作成日時の出力
+class sortByCreatedAtAsc implements SortStrategy
+{
+    use DatabaseConnection;
+    use GetData;
+
+    private $sortBy = "created_at";
+
+    public function __construct()
+    {
+        $this->getConnection();
+    }
+
+    public function getSortedData()
+    {
+        return $this->getData($this->sortBy);
     }
 }
 
@@ -86,25 +112,18 @@ class sortByCreatedAtAsc implements SortStrategy
 class sortByUpDatedAtAsc implements SortStrategy
 {
     use DatabaseConnection;
-    private $tbName = 'posts';
-    private $rows = [];
+    use GetData;
+
+    private $sortBy = "updated_at";
 
     public function __construct()
     {
         $this->getConnection();
     }
 
-    public function getData()
+    public function getSortedData()
     {
-        $sql = "SELECT * FROM {$this->tbName} order by updated_at asc";
-        $stmt = $this->dbConnection->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $this->rows[] = $row;
-        }
-        echo json_encode($this->rows); // 取得したデータをJSON形式で出力
+        return $this->getData($this->sortBy);
     }
 }
 
@@ -117,8 +136,8 @@ class useSortBy
         $this->sortStrategy = $sortStrategy;
     }
 
-    public function getData()
+    public function getSortedData()
     {
-        return $this->sortStrategy->getData();
+        return $this->sortStrategy->getSortedData();
     }
 }

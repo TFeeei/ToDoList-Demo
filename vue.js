@@ -45,16 +45,16 @@ new Vue({
 
     methods: {
         // データを渡す
-        sendDataToServer(url, data) {
+        sendDataToServer(url, data, deleteAnimate) {
             axios.post(url, data)
                 .then(res => {
                     console.log(res.data);
+                    deleteAnimate ? deleteAnimate() : this.getTodoList();
                 }).catch(err => {
                     console.log(err);
-                }).then(() => {
-                    this.getTodoList()
                 })
         },
+
         // データを受け取る
         getTodoList() {
             let apiUrl = this.apiUrl;
@@ -115,12 +115,6 @@ new Vue({
             }
 
         },
-        // 追加もしくは編集をキャンセルする
-        cancelClick() {
-            this.isAddModelShow = false
-            this.isEditModelShow = false
-            this.isDeleteModelShow = false
-        },
 
         // Todoの削除
         deleteTodo(item, index) {
@@ -128,17 +122,28 @@ new Vue({
             this.currentClickIndex = parseInt(this.paginatedTodo[index].ID) // 現在操作しているtodo項目のIDを特定する
             this.animateIndex = index
         },
-
+        // 削除を確認する
         deleteSureClick() {
             this.isDeleteModelShow = false
-            this.deletedTodoLine = this.animateIndex
-            setTimeout(() => {
-                this.sendDataToServer(this.apiUrl + '?action=deleteData', {
-                    id: this.currentClickIndex
-                })
-                this.paginatedTodo.splice(this.animateIndex, 1); // データの削除。フラッシュを防止。
-                this.deletedTodoLine = "";
-            }, 800);
+
+            let deleteAnimate = () => {
+                this.deletedTodoLine = this.animateIndex;
+                setTimeout(() => {
+                    this.deletedTodoLine = ""
+                    this.getTodoList()
+                }, 700)
+            }
+
+            this.sendDataToServer(this.apiUrl + '?action=deleteData', {
+                id: this.currentClickIndex
+            }, deleteAnimate)
+        },
+
+        // 追加・編集・削除をキャンセルする
+        cancelClick() {
+            this.isAddModelShow = false
+            this.isEditModelShow = false
+            this.isDeleteModelShow = false
         },
 
         // タイトルでTodoを検索する

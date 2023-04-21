@@ -11,7 +11,7 @@ $sortByUpDatedAtAsc = new useSortBy(new sortByUpDatedAtAsc());
 
 switch ($action) {
     case 'getData':
-        $sortByCreatedAtAsc->getData();
+        $sortByCreatedAtAsc->getSortedData();
         break;
     case 'insertData':
         $db->insertData(filterXSS($data['title']), filterXSS($data['content']));
@@ -23,7 +23,7 @@ switch ($action) {
         $db->deleteData($data['id']);
         break;
     case 'sortByUpDatedAtAsc':
-        $sortByUpDatedAtAsc->getData();
+        $sortByUpDatedAtAsc->getSortedData();
         break;
 }
 
