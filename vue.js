@@ -1,14 +1,14 @@
 new Vue({
     el: "#root",
     data: {
-        apiUrl: './usePostTableHandle.php',
-        todoList: [],
+        apiUrl: './controller.php',
+        toDoList: [],
 
-        isAddModelShow: false, // Todoを追加するモーダルを表示するフラグ
+        isAddModalShow: false, // Todoを追加するモーダルを表示するフラグ
         inputNewTitle: "",
         inputNewContent: "",
 
-        isEditModelShow: false, // Todoを編集するモーダルを表示するフラグ
+        isEditModalShow: false, // Todoを編集するモーダルを表示するフラグ
         inputEditTitle: "",
         inputEditContent: "",
 
@@ -16,30 +16,30 @@ new Vue({
 
         currentClickIndex: "",
         currentPage: 1,
-        todoPerPage: 5,
+        toDoPerPage: 5,
 
-        isDeleteModelShow: false, //削除時の確認メッセージモーダルを表示するフラグ
-        deletedTodoLine: "", // 削除されたTodo行を一時特定するために存在する変数
+        isDeleteModalShow: false, //削除時の確認メッセージモーダルを表示するフラグ
+        deletedToDoLine: "", // 削除されたTodo行を一時特定するために存在する変数
         animateIndex: "",
 
         selectedOption: "CreatedAtAsc",
     },
 
     mounted() {
-        this.getTodoList();
+        this.getToDoList();
     },
 
     computed: {
         // todoListデータを1ページに表示する件数によって分割する
-        paginatedTodo() {
-            const start = (this.currentPage - 1) * this.todoPerPage;
-            const end = start + this.todoPerPage;
-            return this.todoList.slice(start, end)
+        paginatedToDo() {
+            const start = (this.currentPage - 1) * this.toDoPerPage;
+            const end = start + this.toDoPerPage;
+            return this.toDoList.slice(start, end)
         },
 
         // 合計ページ数を計算する
         totalPages() {
-            return Math.ceil(this.todoList.length / this.todoPerPage);
+            return Math.ceil(this.toDoList.length / this.toDoPerPage);
         },
     },
 
@@ -49,14 +49,14 @@ new Vue({
             axios.post(url, data)
                 .then(res => {
                     console.log(res.data);
-                    deleteAnimate ? deleteAnimate() : this.getTodoList();
+                    deleteAnimate ? deleteAnimate() : this.getToDoList();
                 }).catch(err => {
                     console.log(err);
                 })
         },
 
         // データを受け取る
-        getTodoList() {
+        getToDoList() {
             let apiUrl = this.apiUrl;
             if (this.selectedOption === "CreatedAtAsc") {
                 apiUrl += '?action=getData'
@@ -65,7 +65,7 @@ new Vue({
             }
             axios.get(apiUrl)
                 .then((res) => {
-                    this.todoList = res.data;
+                    this.toDoList = res.data;
                 })
                 .catch(err => {
                     console.log(err);
@@ -73,64 +73,64 @@ new Vue({
         },
 
         // Todoの新規作成
-        addTodo() {
-            this.isAddModelShow = true
+        showAddModal() {
+            this.isAddModalShow = true
         },
-        addSureClick() {
-            if (this.inputNewTitle && this.inputNewContent) {
+        addToDo() {
+            if (this.inputNewTitle && this.inputNewTitle.length < 30 && this.inputNewContent) {
                 let addData = {
                     title: this.inputNewTitle,
                     content: this.inputNewContent,
                 }
                 this.sendDataToServer(this.apiUrl + '?action=insertData', addData)
-                this.isAddModelShow = false
+                this.isAddModalShow = false
             } else {
-                alert("タイトルと内容を両方入力してください")
+                alert("入力内容を確認してください。タイトルと内容を両方入力し、タイトルは30文字以内にしてください。")
             }
 
             // 最後のページを計算して移動する
-            const finalPage = Math.ceil((this.todoList.length + 1) / this.todoPerPage)
+            const finalPage = Math.ceil((this.toDoList.length + 1) / this.toDoPerPage)
             this.currentPage = finalPage
         },
 
-        // Todoの編集
-        editTodo(item, index) {
-            this.isEditModelShow = true
+        // 編集モーダルを表示
+        showEditModal(item, index) {
+            this.isEditModalShow = true
             this.inputEditTitle = item.title
             this.inputEditContent = item.content
-            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID)
+            this.currentClickIndex = parseInt(this.paginatedToDo[index].ID)
         },
-        // 編集を確認する
-        editSureClick() {
-            if (this.inputEditTitle && this.inputEditContent) {
+        // Todoの編集を確認する
+        editToDo() {
+            if (this.inputEditTitle && this.inputEditTitle.length < 30 && this.inputEditContent) {
                 let updateData = {
                     title: this.inputEditTitle,
                     content: this.inputEditContent,
                     id: this.currentClickIndex
                 }
                 this.sendDataToServer(this.apiUrl + '?action=updateData', updateData)
-                this.isEditModelShow = false
+                this.isEditModalShow = false
             } else {
-                alert("タイトルと内容を両方入力してください")
+                alert("入力内容を確認してください。タイトルと内容を両方入力し、タイトルは30文字以内にしてください。")
             }
 
         },
 
-        // Todoの削除
-        deleteTodo(item, index) {
-            this.isDeleteModelShow = true
-            this.currentClickIndex = parseInt(this.paginatedTodo[index].ID) // 現在操作しているtodo項目のIDを特定する
+        // 削除モーダルを表示
+        showDeleteModal(item, index) {
+            this.isDeleteModalShow = true
+            this.currentClickIndex = parseInt(this.paginatedToDo[index].ID) // 現在操作しているtodo項目のIDを特定する
             this.animateIndex = index
         },
         // 削除を確認する
-        deleteSureClick() {
-            this.isDeleteModelShow = false
+        deleteToDo() {
+            this.isDeleteModalShow = false
 
             let deleteAnimate = () => {
-                this.deletedTodoLine = this.animateIndex;
+                this.deletedToDoLine = this.animateIndex;
                 setTimeout(() => {
-                    this.deletedTodoLine = ""
-                    this.getTodoList()
+                    this.deletedToDoLine = ""
+                    this.getToDoList()
                 }, 700)
             }
 
@@ -140,21 +140,21 @@ new Vue({
         },
 
         // 追加・編集・削除をキャンセルする
-        cancelClick() {
-            this.isAddModelShow = false
-            this.isEditModelShow = false
-            this.isDeleteModelShow = false
+        cancelModal() {
+            this.isAddModalShow = false
+            this.isEditModalShow = false
+            this.isDeleteModalShow = false
         },
 
         // タイトルでTodoを検索する
         searchToDo() {
             if (this.inputSearch) {
                 this.currentPage = 1 // 検索したらcurrentPageも更新すること
-                this.todoList = this.todoList.filter((item) => {
+                this.toDoList = this.toDoList.filter((item) => {
                     return item.title.includes(this.inputSearch)
                 })
             } else {
-                this.getTodoList()
+                this.getToDoList()
             }
         },
 

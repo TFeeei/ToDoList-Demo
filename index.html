@@ -32,7 +32,7 @@
             <div class="featureBar">
                 <!-- セレクトボックス -->
                 <label for="" class="sortBox">
-                    <select name="" v-model="selectedOption" @change="getTodoList">
+                    <select name="" v-model="selectedOption" @change="getToDoList">
                         <option value="CreatedAtAsc">作成日時の昇順</option>
                         <option value="UpDatedAtAsc">更新日時の昇順</option>
                     </select>
@@ -40,22 +40,22 @@
 
                 <!-- 追加ボタン -->
                 <div class="addTodo">
-                    <i class="ri-add-fill" @click="addTodo"></i>
+                    <i class="ri-add-fill" @click="showAddModal"></i>
                 </div>
             </div>
 
             <!-- Todo一覧 -->
             <div class="todoTable">
-                <div v-for="(item,index) in paginatedTodo" :key="item.id" class="todoLine"
-                    :class="{'deletedTodoLine':index === deletedTodoLine}">
+                <div v-for="(item,index) in paginatedToDo" :key="item.id" class="todoLine"
+                    :class="{'deletedToDoLine':index === deletedToDoLine}">
                     <div>
                         <p>{{item.title}}</p>
                         <p>{{item.content}}</p>
                     </div>
                     <p>{{item.created_at | dateFormate}}</p>
                     <p>
-                        <i class="ri-edit-2-line" @click="editTodo(item,index)"></i>
-                        <i class="ri-delete-bin-line" @click="deleteTodo(item,index)"></i>
+                        <i class="ri-edit-2-line" @click="showEditModal(item,index)"></i>
+                        <i class="ri-delete-bin-line" @click="showDeleteModal(item,index)"></i>
                     </p>
                 </div>
             </div>
@@ -70,21 +70,21 @@
         </div>
 
         <!-- 新規Todo画面 -->
-        <div id="addModel" v-show="isAddModelShow">
-            <input type="text" v-model="inputNewTitle" maxlength="20" placeholder="タイトル">
+        <div id="addModel" v-show="isAddModalShow">
+            <input type="text" v-model="inputNewTitle" maxlength="30" placeholder="タイトル">
             <input type="text" v-model="inputNewContent" placeholder="内容">
 
             <div>
-                <button @click="addSureClick">確認</button>
-                <button @click="cancelClick">キャンセル</button>
+                <button @click="addToDo">確認</button>
+                <button @click="cancelModal">キャンセル</button>
             </div>
         </div>
 
         <!-- 編集Todo画面 -->
-        <div id="editModel" v-show="isEditModelShow">
+        <div id="editModel" v-show="isEditModalShow">
             <div class="inputContainer">
                 <label>タイトル</label>
-                <input type="text" v-model="inputEditTitle" maxlength="20" id="inputEditTitle">
+                <input type="text" v-model="inputEditTitle" maxlength="30" id="inputEditTitle">
             </div>
             <div class="inputContainer">
                 <label>内容</label>
@@ -92,17 +92,17 @@
             </div>
 
             <div>
-                <button @click="editSureClick">確認</button>
-                <button @click="cancelClick">キャンセル</button>
+                <button @click="editToDo">確認</button>
+                <button @click="cancelModal">キャンセル</button>
             </div>
         </div>
 
         <!-- 削除確認画面 -->
-        <div id="deleteModel" v-show="isDeleteModelShow">
+        <div id="deleteModel" v-show="isDeleteModalShow">
             本当にこのリストを削除しますか？
             <div>
-                <button @click="deleteSureClick">確認</button>
-                <button @click="cancelClick">キャンセル</button>
+                <button @click="deleteToDo">確認</button>
+                <button @click="cancelModal">キャンセル</button>
             </div>
         </div>
 
