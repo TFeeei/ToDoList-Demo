@@ -9,17 +9,30 @@ class APIController
     private $db;
     private $data;
     private $action;
+    private $id;
+    private $title;
+    private $content;
 
     public function __construct()
     {
         $this->db = new PostTableHandler();
         $this->data = json_decode(file_get_contents("php://input"), true); // POSTされたJSONデータから配列へ変換
         $this->action = $_GET['action'] ?? $_POST['action'] ?? null;
+
+        $this->id = $this->data['id'] ?? null;
+        $this->title = $this->data['title'] ?? null;
+        $this->content = $this->data['content'] ?? null;
+
     }
 
     private function filterXSS($filterData)
     {
         return htmlspecialchars($filterData, ENT_QUOTES, 'UTF-8');
+    }
+
+    private function validateData()
+    {
+        return isset($this->title, $this->content) && strlen($this->title) < 30;
     }
 
     public function handleRequest()
@@ -29,16 +42,27 @@ class APIController
                 $this->db->getSortedData(new sortByCreatedAtAsc());
                 break;
             case 'insertData':
-                $this->db->insert($this->filterXSS($this->data['title']), $this->filterXSS($this->data['content']));
+                if ($this->validateData()) {
+                    $this->db->insert($this->filterXSS($this->title), $this->filterXSS($this->content));
+                } else {
+                    echo json_encode(['message' => '入力内容を確認してください。']);
+                }
                 break;
             case 'updateData':
-                $this->db->update($this->data['id'], $this->filterXSS($this->data['title']), $this->filterXSS($this->data['content']));
+                if ($this->validateData()) {
+                    $this->db->update($this->id, $this->filterXSS($this->title), $this->filterXSS($this->content));
+                } else {
+                    echo json_encode(['message' => '入力内容を確認してください。']);
+                }
                 break;
             case 'deleteData':
-                $this->db->delete($this->data['id']);
+                $this->db->delete($this->id);
                 break;
             case 'sortByUpDatedAtAsc':
                 $this->db->getSortedData(new sortByUpDatedAtAsc());
+                break;
+            default:
+                echo json_encode(['message' => '不明エラー']);
                 break;
         }
     }
