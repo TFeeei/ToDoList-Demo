@@ -114,6 +114,11 @@ new Vue({
                 alert("入力内容を確認してください。タイトルと内容を両方入力し、タイトルは30文字以内にしてください。")
             }
 
+            // 最後のページを計算して移動する
+            if (this.selectedOption == "UpDatedAtAsc") {
+                const finalPage = Math.ceil((this.toDoList.length + 1) / this.toDoPerPage)
+                this.currentPage = finalPage
+            }
         },
 
         // 削除モーダルを表示
